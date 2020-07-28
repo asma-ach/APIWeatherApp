@@ -57,7 +57,7 @@ public abstract class AppRoomDB extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final AppRoomDao mDao;
-        String [] countries = {"dolphin", "crocodile", "cobra"};
+        String [] countries = {"FR", "IT", "SA"};
 
         PopulateDbAsync(AppRoomDB db) {
             mDao = db.wordDao();
@@ -70,7 +70,7 @@ public abstract class AppRoomDB extends RoomDatabase {
             //mDao.deleteAll();
 
             for( int i = 0; i <= countries.length - 1; i++) {
-                CountryModel country = new CountryModel("test", "test");
+                CountryModel country = new CountryModel("Paris", "FR");
                 mDao.insert(country);
             }
             return null;

@@ -9,8 +9,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.openweathermapapp.R
 import com.example.openweathermapapp.presentation.viewmodel.WeatherInfoViewModel
@@ -19,7 +17,7 @@ import com.example.shared.data.WeatherInfoShowModelImpl
 import com.example.shared.data.model.City
 import com.example.shared.data.model.WeatherData
 import com.example.shared.utils.convertToListOfCityName
-import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.android.synthetic.main.weather_info_layout.*
 import kotlinx.android.synthetic.main.layout_input_part.*
 import kotlinx.android.synthetic.main.layout_sunrise_sunset.*
 import kotlinx.android.synthetic.main.layout_weather_additional_info.*
@@ -27,7 +25,7 @@ import kotlinx.android.synthetic.main.layout_weather_basic_info.*
 
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * A Fragment to display the Weather information
  */
 class WeatherInfoFragment : Fragment() {
 
@@ -42,17 +40,14 @@ class WeatherInfoFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_first, container, false)
+        val view = inflater.inflate(R.layout.weather_info_layout, container, false)
         model = activity?.baseContext?.let {
             WeatherInfoShowModelImpl(
                 it
             )
         }!!
-        // initialize ViewModel
-        //viewModel = ViewModelProviders.of(this).get(WeatherInfoViewModel::class.java)
 
         setLiveDataListeners()
-        //setViewClickListener()
 
         /**
          * get the city list from city_list.json
@@ -65,10 +60,6 @@ class WeatherInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.btn_view_weather).setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_TownListFragment)
-        }
-
         view.findViewById<Spinner>(R.id.spinner).onItemSelectedListener = object :
             OnItemSelectedListener {
             override fun onItemSelected(
@@ -79,7 +70,7 @@ class WeatherInfoFragment : Fragment() {
             ) {
                 val selectedCityCountry = cityList[position].name + "," + cityList[position].iso2
                 viewModel.getWeatherInfo(selectedCityCountry, model) // fetch weather info
-            } // to close the onItemSelected
+            }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
@@ -87,11 +78,8 @@ class WeatherInfoFragment : Fragment() {
 
 
     private fun setLiveDataListeners() {
-        viewModel.cityListLiveData.observe(FirstFragment@this, object : Observer<MutableList<City>> {
-            override fun onChanged(cities: MutableList<City>) {
-                setCityListSpinner(cities)
-            }
-        })
+        viewModel.cityListLiveData.observe(FirstFragment@this,
+            Observer<MutableList<City>> { cities -> setCityListSpinner(cities) })
 
         viewModel.cityListFailureLiveData.observe(FirstFragment@this, Observer { errorMessage ->
             Toast.makeText(FirstFragment@this.context, errorMessage, Toast.LENGTH_LONG).show()
