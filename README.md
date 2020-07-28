@@ -15,3 +15,5 @@ implementation project(':shared').
 Module description:
 After selecting a city by the user, the app will call the library component (shared) to send a request to the Open Weather Map api. The api will then return a response to the library
 to be parsed and converted to a weather information model to be finally displayed to the user.
+
+
